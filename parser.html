@@ -1,0 +1,18 @@
+<script src="js/require.js"></script>
+<script type="text/javascript" language="javascript" charset="utf-8">
+// <![CDATA[
+	require({
+		baseUrl: 'js',
+		packagePaths: [
+			{ name: 'parser', main: 'index' },
+			{ name: 'test', main: 'index' }
+		]
+	});
+
+	require(['parser', 'test'], function(parser, tests) {
+		window.Parser = parser.Parser;
+		window.tests = tests;
+		tests.run();
+	});
+// ]]>
+</script>
