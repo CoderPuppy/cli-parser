@@ -104,25 +104,27 @@ define(['require', 'exports', 'parser'], function(require, exports, parserJS) {
 		}
 	}
 	
-	exports.run = function run() {
+	exports.run = function run(printer) {
 		var good = true, goods = [], tmp;
+
+		printer = printer || ( !!puts ? function(str) { return puts(str + '\n'); } : console.log.bind(console)) || window.alert.bind(window);
 
 		for(var i = 0; i < tests.length; i++) {
 			try {
 				if(!(tmp = tests[i](new Parser())).good) {
 					good = false;
 					goods[i] = false;
-					console.log('BAD:', tests[i].name, tmp.value, tmp.expected);
+					printer('BAD: ' + tests[i].name + ' ' + tmp.value + ' ' + tmp.expected);
 				} else {
 					goods[i] = true;
-					console.log('GOOD:', tests[i].name);
+					printer('GOOD: ' + tests[i].name);
 				}
 			} catch(ex) {
-				console.log('BAD:', tests[i].name, 'EX:', ex, ex.stack, ex.message);
+				printer('BAD: ' + tests[i].name + ' EX: ' + ex + ' ' + ex.stack + ' ' + ex.message);
 			}
 		}
 
-		console.log(good ? 'GOOD' : 'BAD');
+		printer(good ? 'GOOD' : 'BAD');
 
 		return good;
 	};
