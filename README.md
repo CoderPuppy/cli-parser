@@ -7,7 +7,7 @@ And in my example is load by require.js.
 But could be loaded by any AMD-module-format-compatible loader.
 
 ## Directory Structure
-*js*
+**js**
 
 `parser.js` contains the main parser, a Class named Parser.
 
