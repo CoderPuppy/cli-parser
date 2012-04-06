@@ -6,7 +6,7 @@ It uses the AMD module format. (or what ever it's called)
 And in my example is load by require.js
 But could be loaded by any AMD-module-format-compatible loader.
 
-# Directory Structor
+# Directory Structure
 *js*
 `parser.js` contains the main parser, a Class named Parser
 `test.js` conatains the test suite which you can run using the function run in this module
