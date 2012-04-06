@@ -1,0 +1,297 @@
+<html>
+	<head>
+		<script src="js/require.js"></script>
+		<script type="text/javascript" language="javascript" charset="utf-8">
+		// <![CDATA[
+			require({
+				baseUrl: 'js',
+				packagePaths: [
+					{ name: 'parser', main: 'index' },
+					{ name: 'test', main: 'index' }
+				]
+			});
+
+			require(['parser', 'test'], function(parser, tests) {
+				window.Parser = parser.Parser;
+				window.tests = tests;
+				tests.run();
+			});
+
+//			function $(id) {return document.getElementById(id);}
+		// ]]>
+		</script>
+
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="js/jqconsole-2.7.min.js"></script>
+    <style>
+      html, body {
+        background-color: #333;
+        color: white;
+        font-family: monospace;
+        margin: 0;
+        padding: 0;
+      }
+      #console {
+        height: 90%;
+        width: 90%;
+        position:relative;
+        background-color: black;
+        border: 2px solid #CCC;
+        margin: 2.5%;
+/*        margin-top: 50px;*/
+      }
+      .jqconsole {
+        padding: 10px;
+        padding-bottom: 10px;
+      }
+      .jqconsole-cursor {
+        background-color: #999;
+      }
+      .jqconsole-blurred .jqconsole-cursor {
+        background-color: #666;
+      }
+      .jqconsole-prompt {
+        color: #0d0;
+      }
+      .jqconsole-old-prompt {
+        color: #0b0;
+        font-weight: normal;
+      }
+      .jqconsole-input {
+        color: #dd0;
+      }
+      .jqconsole-old-input {
+        color: #bb0;
+        font-weight: normal;
+      }
+      .brace {
+        color: #00FFFF;
+      }
+      .paran {
+        color: #FF00FF;
+      }
+      .bracket {
+        color: #FFFF00;
+      }
+      .jqconsole-composition {
+        background-color: red;
+      }
+    </style>
+    <script>
+      $(function() {
+        // Creating the console.
+        var header = 'Welcome to Parser Console!\n' +
+                     'Use puts to write and ' +
+                     'gets to read.\n' +
+                     'There is a class Parser lying around and you can run tests.run to run the tests\n';
+        window.jqconsole = $('#console').jqconsole(header, 'JS> ');
+
+	    var puts = window.puts = jqconsole.Write.bind(jqconsole);
+	    var gets = window.gets = jqconsole.Input.bind(jqconsole);
+
+        // Abort prompt on Ctrl+Z.
+        jqconsole.RegisterShortcut('Z', function() {
+          jqconsole.AbortPrompt();
+          handler();
+        });
+        
+        // Move to line start Ctrl+A.
+        jqconsole.RegisterShortcut('A', function() {
+          jqconsole.MoveToStart();
+          handler();
+        });
+        
+        // Move to line end Ctrl+E.
+        jqconsole.RegisterShortcut('E', function() {
+          jqconsole.MoveToEnd();
+          handler();
+        });
+        
+        jqconsole.RegisterMatching('{', '}', 'brace');
+        jqconsole.RegisterMatching('(', ')', 'paran');
+        jqconsole.RegisterMatching('[', ']', 'bracket');
+        // Handle a command.
+        var handler = function(command) {
+          if (command) {
+            try {
+              jqconsole.Write('==> ' + window.eval(command) + '\n');
+            } catch (e) {
+              jqconsole.Write('ERROR: ' + e.message + '\n');
+            }
+          }
+          jqconsole.Prompt(true, handler, function(command) {
+            // Continue line if can't compile the command.
+            try {
+              Function(command);
+            } catch (e) {
+              if (/[\[\{\(]$/.test(command)) {
+                return 1;
+              } else {
+                return 0;
+              }
+            }
+            return false;
+          });
+        };
+
+        // Initiate the first prompt.
+        handler();
+      });
+    </script>
+	</head>
+	<body>
+		<!--<pre><span id="repl"></span><span style="font-size:12px;">&#x2588;</span></pre>
+		<script type="text/javascript">
+		// Some constants
+		var KEY_BACKSPACE = 8;
+		var KEY_RETURN = 13;
+		var KEY_UP = 38;
+		var KEY_DOWN = 40;
+
+		var repl = {
+		  version: "1.0"
+		}
+		repl.screen = {
+		  div: $("repl"),
+		  print: function(i) {
+			repl.screen.div.innerHTML += i;
+		  },
+		  println: function(i) {
+			repl.screen.div.innerHTML += i + "\n";
+		  },
+		  backspace: function() {
+			if (repl.command.text.length == 0)
+			  return;
+			v = repl.screen.div.innerHTML;
+			repl.screen.div.innerHTML = v.substring(0,v.length-1);
+			repl.command.text = repl.command.text.substring(0,repl.command.text.length-1);
+		  },
+		  clearline: function() {
+			while (repl.command.text.length > 0) 
+			  repl.screen.backspace();
+		  }
+		}
+		repl.command = {
+		  text: '',
+		  history: [],
+		  historypos: 0,
+		  list: {
+			"eval": function(str) {
+			  repl.screen.println(eval(str));
+			},
+			"set": function(str) {
+			  var parted = str.split(' ');
+			  repl.env[parted.shift()] = parted.join(' ');
+			},
+			"env": function(str) {
+			  repl.screen.println(repl.env[str]);
+			},
+			"command": function(str) {
+			  var parted = str.split(' ');
+			  var name = parted.shift();
+			  eval('repl.command.list["' + name + '"] = function(args){' + 
+			parted.join(' ') + '}');
+			  return name;
+			},
+			"get": function(url) {
+			  if (url.indexOf(':') == -1)
+			url = "http://"+url;
+			  repl.screen.println("Getting '"+url+"'");
+			  try {
+			var req = new XMLHttpRequest();
+			req.open('GET',url,false); req.send(null);
+				if (req.status == 200) {
+			  repl.screen.println(req.responseText);
+				} else { repl.screen.println("Error encountered: "+req.status); }
+			  } catch(e) {
+			repl.screen.println("Error encountered: "+e); return;
+			  }
+			},
+			"help": function(args) {
+			  repl.screen.println("jsrepl commands:\n");
+			  place = 0;
+			  for (var i in repl.command.list) {
+			if (place == 3) {
+			  place = 0; repl.screen.print("\n");
+			}
+			repl.screen.print(i);
+			var diff = 15 - i.length;
+			for (var j = 0; j < diff; j++) {
+			  repl.screen.print(' ');
+			}
+			place += 1;
+			  }
+			  repl.screen.print("\n");
+			}
+		  },
+		  launch: function() {
+			repl.command.history.push(repl.command.text);
+			input = repl.command.text;
+			repl.command.text = '';
+			if (input[0] == '`') {
+			  repl.screen.println(eval(input.replace('`',''))); return;
+			}
+			cmd = input.split(' ');
+			repl.command.run(cmd.shift(),cmd.join(' '));
+		  },
+		  run: function(cmd,args) {
+			if (args == null) args = [];
+			if (repl.command.list[cmd] == null) {
+			  repl.screen.println("No such command '"+cmd+"'");
+			  return;
+			}
+			repl.command.list[cmd](args);
+		  },
+		  pre_prompt: function() {
+			document.body.style.background = repl.env.background;
+			document.body.style.color = repl.env.foreground;
+		  }
+		}
+		repl.env = {
+		  user: "user",
+		  background: "#fff",
+		  foreground: "#000"
+		}
+		repl.input = {
+		  keyboard_event: function(evt) {
+			if (evt.keyCode) {
+			  var keyCode = evt.keyCode;
+			  if (keyCode == KEY_BACKSPACE) {
+				repl.screen.backspace();
+			  } else if (keyCode == KEY_RETURN) {
+			repl.screen.print("\n");
+			repl.command.launch();
+			repl.command.pre_prompt();
+			repl.screen.print(repl.env.user+"@jsrepl$ ");
+			  } else if (keyCode == KEY_UP) {
+			return; // XXX: It doesn't work. Fuck JS.
+			repl.screen.clearline();
+			if (repl.command.history.length < (-repl.command.historypos)+1)
+			  return; 
+			repl.command.historypos -= 1;
+			repl.command.text = repl.command.history.slice(repl.command.historypos,1)[0];
+			repl.screen.print(repl.command.text);
+			  } else if (keyCode == KEY_DOWN) {
+			return; // XXX: It doesn't work. Fuck JS.
+			repl.screen.clearline();
+			if (repl.command.historypos == -1)
+			  return;
+			repl.command.historypos += 1;
+			repl.command.text = repl.command.history.slice(repl.command.historypos,1)[0];
+			repl.screen.print(repl.command.text);
+			  }
+			} else {
+			  kchar = String.fromCharCode(evt.charCode);
+			  repl.screen.print(kchar);
+			  repl.command.text += kchar;
+			}
+		  }
+		}
+
+		document.onkeypress = repl.input.keyboard_event;
+		repl.screen.println("Javascript REPL version "+repl.version+"\n");
+		repl.screen.print("user@jsrepl$ ");
+		</script>-->
+		<div id="console"></div>
+	</body>
+</html>
