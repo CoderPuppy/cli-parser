@@ -107,7 +107,7 @@ define(['require', 'exports', 'parser'], function(require, exports, parserJS) {
 	exports.run = function run(printer) {
 		var good = true, goods = [], tmp;
 
-		printer = printer || ( !!puts ? function(str) { return puts(str + '\n'); } : console.log.bind(console)) || window.alert.bind(window);
+		printer = printer || ( !!window.puts ? function(str) { return puts(str + '\n'); } : console.log.bind(console)) || window.alert.bind(window);
 
 		for(var i = 0; i < tests.length; i++) {
 			try {
