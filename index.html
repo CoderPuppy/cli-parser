@@ -89,7 +89,7 @@
 			var puts = window.puts = jqconsole.Write.bind(jqconsole);
 			var gets = window.gets = jqconsole.Input.bind(jqconsole);
 
-			tests.run(puts); // Run all the tests
+			tests.run(function(str) { puts(str + '\n'); }); // Run all the tests
 			
 		    // Abort prompt on Ctrl+Z.
 		    jqconsole.RegisterShortcut('Z', function() {
@@ -294,6 +294,7 @@
 		repl.screen.println("Javascript REPL version "+repl.version+"\n");
 		repl.screen.print("user@jsrepl$ ");
 		</script>-->
+
 		<div id="console"></div>
 	</body>
 </html>
