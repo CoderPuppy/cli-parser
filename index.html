@@ -89,7 +89,7 @@
 			var puts = window.puts = jqconsole.Write.bind(jqconsole);
 			var gets = window.gets = jqconsole.Input.bind(jqconsole);
 
-			test.run(function(str) { puts(str + '\n'); }); // Run all the tests
+			if(window.tests) tests.run(function(str) { puts(str + '\n'); }); // Run all the tests
 			
 		    // Abort prompt on Ctrl+Z.
 		    jqconsole.RegisterShortcut('Z', function() {
