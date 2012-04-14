@@ -141,7 +141,7 @@ define(['require', 'exports'], function(require, exports) {
 			origStr = str; // Save the original string
 			env = env || {}; // Make sure we have an enviorment
 			execCmd = execCmd || console.log.bind(console); // Make sure we have a command executer
-			str = this.parseEnvCMD(str, env, execCmd).replace(/(\\\\|[^\\]|^)\$([\w\d_\-]+)/g, function($A, $1, $2) { // Replace enviorment variables and embedded commands
+			str = this.parseEnvCMD(str, env, execCmd).replace(/(\\\\|[^\\]|^)\$([\w\d_\-\?]+)/g, function($A, $1, $2) { // Replace enviorment variables and embedded commands
 				return $1 + env[$2]; // Return the character before it and the enviorment variables value
 			}).replace(/(\\\\|[^\\]|^)!(\d+|[\$!])/g, function($a, $1, $2) { // Replace history such as !! !$ and !<num>
 				var tmpHistory; // Temporary variable
