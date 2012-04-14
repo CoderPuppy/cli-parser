@@ -27,7 +27,7 @@ define(['require', 'exports'], function(require, exports) {
 
 				cmdOutput = execCmd(cmd, env, execCmd) + '';
 
-				$CmdRegExp.lastIndex = curMatch.index + curMatch[1].length + 2 + cmdOutput.length; // Search from here TODO: Make this get the end of the output
+				$CmdRegExp.lastIndex = curMatch.index + curMatch[1].length + 2 + cmdOutput.length; // Search from here
 				
 				// Replace
 				re = new RegExp('(' + RegExp.escape(str.substring(0, curMatch.index + curMatch[1].length)) + ')' + RegExp.escape(str.substring(curMatch.index + curMatch[1].length, endIndex + 2)) + '(' + RegExp.escape(str.substring(endIndex + 2)) + ')'); // Create a RegExp for it it finds whats before it (capture), it, and whats after it (capture)
