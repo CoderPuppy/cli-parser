@@ -212,7 +212,7 @@ define(['require', 'exports'], function(require, exports) {
 			})*/
 
 			if(inQuote) { // Throw an error if its still in a quote
-				throw "Unclosed quotation at: end";
+				throw "Unclosed quotation at: end type: " + inQuote;
 			}
 
 			/*for(var i = 0; i < split.length; i++) {
