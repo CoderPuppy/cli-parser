@@ -142,14 +142,14 @@ define(['require', 'exports'], function(require, exports) {
 			env = env || {}; // Make sure we have an enviorment
 			execCmd = execCmd || console.log.bind(console); // Make sure we have a command executer
 			str = this.parseEnvCMD(str, env, execCmd).replace(/(\\\\|[^\\]|^)\$([\w\d_\-\?]+)/g, function($A, $1, $2) { // Replace enviorment variables and embedded commands
-				return $1 + env[$2]; // Return the character before it and the enviorment variables value
+				return $1 + (env[$2] || ''); // Return the character before it and the enviorment variables value
 			}).replace(/(\\\\|[^\\]|^)!(\d+|[\$!])/g, function($a, $1, $2) { // Replace history such as !! !$ and !<num>
 				var tmpHistory; // Temporary variable
 			
 				if($2 == '$') { // If this is !$
 					tmpHistory = self.history[0].split; // Get the last command that was parsed
 				
-					return $1 + tmpHistory[tmpHistory.length - 1]; // Return the last argument of it
+					return $1 + ( tmpHistory ? tmpHistory[tmpHistory.length - 1] : '' ); // Return the last argument of it
 				}
 
 				return $1 + self.history[parseInt($2.replace('!', 0))].text; // Get an integer from $1 replacing ! with 0 and get that whole commands text
