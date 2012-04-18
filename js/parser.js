@@ -237,11 +237,13 @@ define(['require', 'exports'], function(require, exports) {
 			for(var i = 0; i < split.length; i++) {
 				curStr = split[i]; // Get the currentString
 
-				split[i] = curStr.replace(/(\\\\|[^\\]|^)(?:\\n|\\r)/g, '\n') // Replace escaped newlines with actual new lines
+				split[i] = new String(curStr.replace(/(\\\\|[^\\]|^)(?:\\n|\\r)/g, '\n') // Replace escaped newlines with actual new lines
 					.replace(/(\\\\|[^\\]|^)(?:"|')/g, '$1') // Replace rogue quotes in the middle of strings
 					.replace(/(\\\\|[^\\]|^)(?:"|')/g, '$1') // Replace the ones the above statement missed eg ones right after one another
 					.replace(/(\\\\|[^\\]|^)\\(["'$])/g, '$1$2') // Replace escaped quotes and $ signs with unescaped ones
-					.replace(/\\\\/g, '\\');
+					.replace(/\\\\/g, '\\'));
+				split[i].begin = curStr.begin;
+				split[i].end = curStr.end;
 			}
 
 			split.text = origStr; // Return text also
