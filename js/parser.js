@@ -154,7 +154,9 @@ define(['require', 'exports'], function(require, exports) {
 
 				return $1 + self.history[parseInt($2.replace('!', 0))].text; // Get an integer from $1 replacing ! with 0 and get that whole commands text
 			});
-			split = str.split(' '); // Split it up by spaces
+			split = str.split(' ').map(function(v) {
+				return new String(v);
+			}); // Split it up by spaces
 
 			/*str = ;
 
@@ -162,6 +164,9 @@ define(['require', 'exports'], function(require, exports) {
 
 			for(var i = 0; i < split.length; i++) { // Join them back together as needed
 				curStr = split[i]; // Get the current String
+				
+				split[i].begin = i > 0 ? split[i - 1].end + 1 : 0;
+				split[i].end = split[i].begin + curStr.length;
 				
 				if(curStr[curStr.length - 1] == '\\' && curStr[curStr.length - 2] != '\\') { // Join up with the next arg if this one ends in a backslash and that backslash is not escaped
 					var tmpArr = split.splice(i, 2); // Take the two to be joined out
@@ -174,7 +179,12 @@ define(['require', 'exports'], function(require, exports) {
 				var matches = getMatches(quoteRegExp, curStr, -1), curMatch; // Get all the quotes and maybe also define some variables
 				// (?:[^\\\\]|^)
 				if(!!inQuote && (new RegExp('([^\\\\]|^)(' + RegExp.escape(inQuote) + ')')).test(curStr)) { // Make sure we in a string and that there is a quote of the same type as the on that started the string
-					split.splice(curStart, 0, split.splice(curStart, (i - curStart) + 1).join(' ')); // Join the string together and add it back into the args array
+					var tmpBegin = split[curStart].begin;
+					var tmpEnd = curStr.end;
+					var tmpStr = split.splice(curStart, (i - curStart) + 1).join(' ');
+					tmpStr.begin = tmpBegin;
+					tmpStr.end = tmpEnd;
+					split.splice(curStart, 0, ); // Join the string together and add it back into the args array
 					inQuote = undefined; // Clear the start character
 					curStart = undefined; // Clear the start index
 					matches.shift(); // Remove the first match (this match here)
