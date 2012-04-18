@@ -181,10 +181,10 @@ define(['require', 'exports'], function(require, exports) {
 				if(!!inQuote && (new RegExp('([^\\\\]|^)(' + RegExp.escape(inQuote) + ')')).test(curStr)) { // Make sure we in a string and that there is a quote of the same type as the on that started the string
 					var tmpBegin = split[curStart].begin;
 					var tmpEnd = curStr.end;
-					var tmpStr = split.splice(curStart, (i - curStart) + 1).join(' ');
+					var tmpStr = new String(split.splice(curStart, (i - curStart) + 1).join(' '));
 					tmpStr.begin = tmpBegin;
 					tmpStr.end = tmpEnd;
-					split.splice(curStart, 0, ); // Join the string together and add it back into the args array
+					split.splice(curStart, 0, tmpStr); // Join the string together and add it back into the args array
 					inQuote = undefined; // Clear the start character
 					curStart = undefined; // Clear the start index
 					matches.shift(); // Remove the first match (this match here)
