@@ -88,20 +88,38 @@ define(['require', 'exports', 'parser'], function(require, exports, parserJS) {
 		}
 	];
 
-	function assert(got, expected) {
-		// console.log(got, expected);
+	function type(o) {
+		var type = typeof(o);
 		
-		if(typeof(got) == 'object' && got.length !== undefined && got.length !== null && typeof(expected) == 'object' && expected.length !== undefined && expected.length !== null) { // Array
+		switch(type) {
+			case 'object':
+				if(o === null) type = 'null';
+				else if(o.constructor == String) type = 'string';
+				else if(o.constructor == Number) type = 'number';
+				else if(type(o.length) == 'number') type = 'array';
+				break;
+		}
+	}
+
+	function equal(first, second) {
+		var fType = type(first), sType = type(first);
+		if(fType == 'array' && sType == 'array') { // Array
 			var good = true;
 
 			for(var i = 0; i < got.length; i++) {
-				if(got[i] !== expected[i]) good = false;
+				if(equal(got[i], expected[i])) good = false;
 			}
 
-			return { value: got, expected: expected, good: good };
-		} else if(typeof(got) == 'string' && typeof(expected) == 'string') { // String
-			return { value: got, expected: expected, good: got == expected };
+			return good;
+		} else if(type(got) == 'string' && type(expected) == 'string') { // String
+			return got.toString() == expected.toString();
+		} else {
+			return false;
 		}
+	}
+
+	function assert(got, expected) {
+		return { value: got, expected: expected, good: equal(got, expected) };
 	}
 	
 	exports.run = function run(printer) {
