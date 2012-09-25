@@ -106,9 +106,11 @@ define(['require', 'exports', 'parser'], function(require, exports, parserJS) {
 	function equal(first, second) {
 		var fType = type(first), sType = type(first);
 		if(fType == 'array' && sType == 'array') { // Array
+			if(!equal(first.length, second.length)) return false;
+			
 			var good = true;
 
-			for(var i = 0; i < got.length; i++) {
+			for(var i = 0; i < first.length; i++) {
 				if(!equal(first[i], second[i])) good = false;
 			}
 
