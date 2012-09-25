@@ -89,16 +89,18 @@ define(['require', 'exports', 'parser'], function(require, exports, parserJS) {
 	];
 
 	function type(o) {
-		var type = typeof(o);
+		var oType = typeof(o);
 		
-		switch(type) {
+		switch(oType) {
 			case 'object':
-				if(o === null) type = 'null';
-				else if(o.constructor == String) type = 'string';
-				else if(o.constructor == Number) type = 'number';
-				else if(type(o.length) == 'number') type = 'array';
+				if(o === null) oType = 'null';
+				else if(o.constructor == String) oType = 'string';
+				else if(o.constructor == Number) oType = 'number';
+				else if(type(o.length) == 'number') oType = 'array';
 				break;
 		}
+		
+		return oType;
 	}
 
 	function equal(first, second) {
@@ -107,12 +109,12 @@ define(['require', 'exports', 'parser'], function(require, exports, parserJS) {
 			var good = true;
 
 			for(var i = 0; i < got.length; i++) {
-				if(equal(got[i], expected[i])) good = false;
+				if(equal(first[i], second[i])) good = false;
 			}
 
 			return good;
-		} else if(type(got) == 'string' && type(expected) == 'string') { // String
-			return got.toString() == expected.toString();
+		} else if(fType == 'string' && sType == 'string') { // String
+			return first.toString() == second.toString();
 		} else {
 			return false;
 		}
