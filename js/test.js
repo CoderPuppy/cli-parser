@@ -109,7 +109,7 @@ define(['require', 'exports', 'parser'], function(require, exports, parserJS) {
 			var good = true;
 
 			for(var i = 0; i < got.length; i++) {
-				if(equal(first[i], second[i])) good = false;
+				if(!equal(first[i], second[i])) good = false;
 			}
 
 			return good;
